@@ -21,8 +21,8 @@ def register_feature_handlers(bot):
             [InlineKeyboardButton("💧 Watermark", callback_data="watermark_command"), InlineKeyboardButton("🔄 Reset", callback_data="reset_command")],
             [InlineKeyboardButton("🖨️ Bot Working Logs", callback_data="logs_command")],
             [InlineKeyboardButton("🖋️ File Name", callback_data="custom_command"), InlineKeyboardButton("🏷️ Title", callback_data="titlle_command")],
-            [InlineKeyboardButton("🎥 YouTube", callback_data="yt_command")],
-            [InlineKeyboardButton("🌐 HTML", callback_data="html_command")],
+            [InlineKeyboardButton("🎥 YouTube", callback_data="yt_command"), InlineKeyboardButton("🌐 HTML", callback_data="html_command")],
+            [InlineKeyboardButton("📂 2GB+ File Support", callback_data="2gb_command")],
             [InlineKeyboardButton("📝 Text File", callback_data="txt_maker_command"), InlineKeyboardButton("📢 Broadcast", callback_data="broadcast_command")],
             [InlineKeyboardButton("🔙 Back to Main Menu", callback_data="back_to_main_menu")]
         ])
@@ -62,7 +62,7 @@ def register_feature_handlers(bot):
       )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("reset_command"))
-    async def restart_button(client, callback_query):
+    async def reset_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"**🔄 Reset Command:**\n\nIf You Want to Reset or Restart Your Bot, Simply Use Command /reset."
       await callback_query.message.edit_media(
@@ -74,7 +74,7 @@ def register_feature_handlers(bot):
       )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("logs_command"))
-    async def pin_button(client, callback_query):
+    async def logs_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"**🖨️ Bot Working Logs:**\n\n◆/logs - Bot Send Working Logs in .txt File."
       await callback_query.message.edit_media(
@@ -110,9 +110,22 @@ def register_feature_handlers(bot):
       )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("broadcast_command"))
-    async def pin_button(client, callback_query):
+    async def broadcast_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"**📢 Broadcasting Support:**\n\n◆/broadcast - 📢 Broadcast to All Users.\n◆/broadusers - 👁️ To See All Broadcasting User"
+      await callback_query.message.edit_media(
+        InputMediaPhoto(
+          media="https://tinypic.host/images/2025/07/14/file_000000002d44622f856a002a219cf27aconversation_id68747543-56d8-800e-ae47-bb6438a09851message_id8e8cbfb5-ea6c-4f59-974a-43bdf87130c0.png",
+          caption=caption
+          ),
+          reply_markup=keyboard
+      )
+
+# .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
+    @bot.on_callback_query(filters.regex("2gb_command"))
+    async def 2gb_button(client, callback_query):
+      keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
+      caption = f"<blockquote>**📂 2GB+ File Supported:**</blockquote>\n\nSupports large files over 2GB, automatically spilling into parts."
       await callback_query.message.edit_media(
         InputMediaPhoto(
           media="https://tinypic.host/images/2025/07/14/file_000000002d44622f856a002a219cf27aconversation_id68747543-56d8-800e-ae47-bb6438a09851message_id8e8cbfb5-ea6c-4f59-974a-43bdf87130c0.png",
@@ -134,7 +147,7 @@ def register_feature_handlers(bot):
       )
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("yt_command"))
-    async def y2t_button(client, callback_query):
+    async def yt_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"**YouTube Commands:**\n\n◆/y2t - 🔪 YouTube Playlist → .txt Converter\n◆/ytm - 🎶 YouTube → .mp3 downloader\n\n<blockquote><b>◆YouTube → .mp3 downloader\n01. Send YouTube Playlist.txt file\n02. Send single or multiple YouTube links set\neg.\n`https://www.youtube.com/watch?v=xxxxxx\nhttps://www.youtube.com/watch?v=yyyyyy`</b></blockquote>"
       await callback_query.message.edit_media(
@@ -147,7 +160,7 @@ def register_feature_handlers(bot):
 
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("html_command"))
-    async def y2t_button(client, callback_query):
+    async def html_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"**HTML Commands:**\n\n◆/t2h - 🌐 .txt → .html Converter"
       await callback_query.message.edit_media(
