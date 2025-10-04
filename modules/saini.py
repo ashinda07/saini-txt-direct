@@ -350,7 +350,7 @@ async def send_vid(bot: Client, m: Message, cc, filename, vidwatermark, thumb, n
         parts.sort(key=lambda x: int(x.split('_')[-1].split('.')[0]))
         for i, part in enumerate(parts):
             part_dur = int(duration(part))
-            await splitting_msg.edit_text(f"<blockquote>**★彡 Uploading Spilt Part {i + 1} OF {len(parts)} 彡★**</blockquote>")
+            await splitting_msg.edit_text(f"<blockquote>**★彡 Uploading Spilt Part {i + 1} of {len(parts)} 彡★**</blockquote>")
             try:
                 part_caption = f"⋅ ⋅ ─ ─ **Part {i + 1}** ─ ─ ⋅ ⋅ \n\n{cc}"
                 await bot.send_video(channel_id, part, caption=part_caption, supports_streaming=True, height=720, width=1280, thumb=thumbnail, duration=part_dur, progress=progress_bar, progress_args=(reply, start_time))  
