@@ -223,11 +223,16 @@ async def drm_handler(bot: Client, m: Message):
                 if "youtu" in url:
                     oembed_url = f"https://www.youtube.com/oembed?url={url}&format=json"
                     response = requests.get(oembed_url)
-                    audio_title = response.json().get('title', 'YouTube Video')
+                    oembed_data = response.json()
+                    audio_title = oembed_data.get('title', 'YouTube Video')
                     audio_title = audio_title.replace("_", " ")
                     name = f'{audio_title[:60]}'
                     name1 = f'{audio_title[:60]}'
                     namef = f'{audio_title[:60]}'
+                    thumb = oembed_data.get('thumbnail_url', '')
+                    if thumb.startswith("http://") or thumb.startswith("https://"):
+                        getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
+                        thumb = "thumb.jpg"
                 else:
                     name = f'{name1[:60]}'
                     namef = f'{name1[:60]}'
