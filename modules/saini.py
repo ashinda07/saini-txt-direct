@@ -290,6 +290,29 @@ async def download_and_decrypt_video(url, cmd, name, key):
             print(f"Failed to decrypt {video_path}.")  
             return None  
 
+#================= Spliting According to File Size ==================
+def duration(filename):
+    result = subprocess.run(f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{filename}"', shell=True, capture_output=True, text=True)
+    return float(result.stdout.strip())
+
+def duration(part):
+    result = subprocess.run(f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{part}"', shell=True, capture_output=True, text=True)
+    return float(result.stdout.strip())
+
+def split_video(filename, max_size):
+    parts = []
+    part_prefix = filename.split('.')[0]
+    total_duration = duration(filename)
+    file_size = os.path.getsize(filename)
+    segment_duration = ceil((total_duration * max_size) / file_size)
+    split_command = f'ffmpeg -y -i "{filename}" -c copy -map 0 -f segment -segment_time {segment_duration} -reset_timestamps 1 "{part_prefix}_part_%03d.mkv"'
+    subprocess.run(split_command, shell=True)
+    
+    for part in os.listdir():
+        if part.startswith(part_prefix) and part.endswith('.mkv'):
+            parts.append(part)
+    return parts
+
 #============================================================================================================================================
 async def send_vid(bot: Client, m: Message, cc, filename, vidwatermark, thumb, name, prog, channel_id):
     subprocess.run(f'ffmpeg -i "{filename}" -ss 00:00:10 -vframes 1 "{filename}.jpg"', shell=True)
@@ -318,10 +341,29 @@ async def send_vid(bot: Client, m: Message, cc, filename, vidwatermark, thumb, n
     dur = int(duration(w_filename))
     start_time = time.time()
 
-    try:
-        await bot.send_video(channel_id, w_filename, caption=cc, supports_streaming=True, height=720, width=1280, thumb=thumbnail, duration=dur, progress=progress_bar, progress_args=(reply, start_time))
-    except Exception:
-        await bot.send_document(channel_id, w_filename, caption=cc, progress=progress_bar, progress_args=(reply, start_time))
+    max_size = 1.8 * 1024 * 1024 * 1024  # 1.8GB in bytes
+    file_size = os.path.getsize(w_filename)
+    
+    if file_size > max_size:
+        splitting_msg = await bot.send_message(channel_id, f"<blockquote>🛠 **Splitting video into parts**...\n⏰ **Please wait few minutes**...⏳</blockquote>")
+        parts = split_video(w_filename, max_size)
+        parts.sort(key=lambda x: int(x.split('_')[-1].split('.')[0]))
+        for i, part in enumerate(parts):
+            part_dur = int(duration(part))
+            await splitting_msg.edit_text(f"<blockquote>**★彡 Uploading Spilt Part {i + 1} OF {len(parts)} 彡★**</blockquote>")
+            try:
+                part_caption = f"⋅ ⋅ ─ ─ **Part {i + 1}** ─ ─ ⋅ ⋅ \n\n{cc}"
+                await bot.send_video(channel_id, part, caption=part_caption, supports_streaming=True, height=720, width=1280, thumb=thumbnail, duration=part_dur, progress=progress_bar, progress_args=(reply, start_time))  
+            except Exception:
+                await bot.send_document(channel_id, part, caption=part_caption, progress=progress_bar, progress_args=(reply, start_time))
+            os.remove(part)
+            await asyncio.sleep(3)
+        await splitting_msg.delete()
+    else:
+        try:
+            await bot.send_video(channel_id, w_filename, caption=cc, supports_streaming=True, height=720, width=1280, thumb=thumbnail, duration=dur, progress=progress_bar, progress_args=(reply, start_time))
+        except Exception:
+            await bot.send_document(channel_id, w_filename, caption=cc, progress=progress_bar, progress_args=(reply, start_time))
     os.remove(w_filename)
     await reply.delete(True)
     await reply1.delete(True)
