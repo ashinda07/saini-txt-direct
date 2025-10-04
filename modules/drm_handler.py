@@ -229,7 +229,15 @@ async def drm_handler(bot: Client, m: Message):
                     name = f'{audio_title[:60]}'
                     name1 = f'{audio_title[:60]}'
                     namef = f'{audio_title[:60]}'
-                    thumb = oembed_data.get('thumbnail_url', '')
+                    video_id = helper.get_youtube_video_id(url)
+                    if video_id:
+                        thumb_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
+                        thumb_resp = requests.get(thumb_url)
+                        if thumb_resp.status_code != 200:
+                            thumb_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+                        thumb = thumb_url
+                    else:
+                        thumb = oembed_data.get('thumbnail_url', '')
                     if thumb.startswith("http://") or thumb.startswith("https://"):
                         getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
                         thumb = "thumb.jpg"
