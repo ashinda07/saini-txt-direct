@@ -219,6 +219,10 @@ async def drm_handler(bot: Client, m: Message):
 #........................................................................................................................................................................................
              
             name1 = links[i][0].replace("(", "[").replace(")", "]").replace("_", "").replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
+            if "youtu" in url:
+                video_id = helper.get_youtube_video_id(url)
+                url = f"https://www.youtube.com/watch?v={video_id}"
+
             if m.text:
                 if "youtu" in url:
                     oembed_url = f"https://www.youtube.com/oembed?url={url}&format=json"
@@ -229,7 +233,7 @@ async def drm_handler(bot: Client, m: Message):
                     name = f'{audio_title[:60]}'
                     name1 = f'{audio_title[:60]}'
                     namef = f'{audio_title[:60]}'
-                    video_id = helper.get_youtube_video_id(url)
+                    
                     if video_id:
                         thumb_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
                         thumb_resp = requests.get(thumb_url)
@@ -325,8 +329,6 @@ async def drm_handler(bot: Client, m: Message):
 
             if "youtu" in url:
                 ytf = f"b[height<={raw_text2}][ext=mp4]/bv[height<={raw_text2}][ext=mp4]+ba[ext=m4a]/b[ext=mp4]"
-            elif "embed" in url:
-                ytf = f"bestvideo[height<={raw_text2}]+bestaudio/best[height<={raw_text2}]"
             else:
                 ytf = f"b[height<={raw_text2}]/bv[height<={raw_text2}]+ba/b/bv+ba"
            
