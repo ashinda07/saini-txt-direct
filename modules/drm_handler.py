@@ -222,6 +222,17 @@ async def drm_handler(bot: Client, m: Message):
             if "youtu" in url:
                 video_id = helper.get_youtube_video_id(url)
                 url = f"https://www.youtube.com/watch?v={video_id}"
+                if video_id:
+                    thumb_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
+                    thumb_resp = requests.get(thumb_url)
+                    if thumb_resp.status_code != 200:
+                        thumb_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+                    thumb = thumb_url
+                else:
+                    thumb = oembed_data.get('thumbnail_url', '')
+                if thumb.startswith("http://") or thumb.startswith("https://"):
+                    getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
+                    thumb = "thumb.jpg"
 
             if m.text:
                 if "youtu" in url:
@@ -233,18 +244,6 @@ async def drm_handler(bot: Client, m: Message):
                     name = f'{audio_title[:60]}'
                     name1 = f'{audio_title[:60]}'
                     namef = f'{audio_title[:60]}'
-                    
-                    if video_id:
-                        thumb_url = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
-                        thumb_resp = requests.get(thumb_url)
-                        if thumb_resp.status_code != 200:
-                            thumb_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
-                        thumb = thumb_url
-                    else:
-                        thumb = oembed_data.get('thumbnail_url', '')
-                    if thumb.startswith("http://") or thumb.startswith("https://"):
-                        getstatusoutput(f"wget '{thumb}' -O 'thumb.jpg'")
-                        thumb = "thumb.jpg"
                 else:
                     name = f'{name1[:60]}'
                     namef = f'{name1[:60]}'
