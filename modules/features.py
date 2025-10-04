@@ -123,7 +123,7 @@ def register_feature_handlers(bot):
 
 # .....,.....,.......,...,.......,....., .....,.....,.......,...,.......,.....,
     @bot.on_callback_query(filters.regex("2gb_command"))
-    async def 2gb_button(client, callback_query):
+    async def bigsizevideo_button(client, callback_query):
       keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("🔙 Back to Feature", callback_data="feat_command")]])
       caption = f"<blockquote>**📂 2GB+ File Supported:**</blockquote>\n\nSupports large files over 2GB, automatically spilling into parts."
       await callback_query.message.edit_media(
